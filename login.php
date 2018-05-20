@@ -6,6 +6,7 @@ if (isset($_SESSION['user_id'])) {
 }
 
 require 'database.php';
+require 'encrypt.php';
 require 'partials/header.php';
 
 if (!empty($_POST['email']) && !empty($_POST['password'])) {
@@ -16,12 +17,19 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
 
   $message = '';
 
-  if (count($results) > 0 && password_verify($_POST['password'], $results['password'])) {
+  if ( count($results) > 0 &&
+    (
+      password_verify($_POST['password'], $results['password']) ||
+      decryptSha1($_POST['password'], $results['password']) ||
+      decryptMd5($_POST['password'], $results['password']) ||
+      decryptSalt($_POST['password'], $results['password'])
+    )) {
 
     $_SESSION['user_id'] = $results['id'];
     header('Location: /');
 
   } else {
+    header('Location: /login.php');
     $message = "Las credenciales no coinciden";
   }
 }

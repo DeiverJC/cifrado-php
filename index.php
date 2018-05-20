@@ -5,15 +5,16 @@ require 'database.php';
 require 'partials/header.php';
 
 if (isset($_SESSION['user_id'])) {
-  $query = $connection->prepare('SELECT id, email, password FROM users WHERE id = :id');
-  $query->bindParam(':id', $_SESSION['user_id']);
+  $query = $connection->prepare('SELECT * FROM users');
+  // $query->bindParam(':id', $_SESSION['user_id']);
   $query->execute();
-  $results = $query->fetch(PDO::FETCH_ASSOC);
+  // $results = $query->fetch(PDO::FETCH_ASSOC);
+  $results = $query->fetchAll();
 
-  $user = null;
+  $users = null;
 
   if (count($results) > 0) {
-    $user = $results;
+    $users = $results;
   }
 }
 
@@ -22,12 +23,12 @@ if (isset($_SESSION['user_id'])) {
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="card text-center">
-                  <div class="card-header">
+                <div class="card text-center border-success">
+                  <div class="card-header text-white bg-success">
                     Bienvenido
                   </div>
 
-                <?php if(!empty($user)): ?>
+                <?php if(!empty($users)): ?>
 
                   <div class="card-body">
                     <table class="table">
@@ -35,15 +36,19 @@ if (isset($_SESSION['user_id'])) {
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Correo electronico</th>
+                          <th scope="col">Cifrado</th>
                           <th scope="col">Contraseña</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
+                      <?php foreach ($users as $user): ?>
+                        <tr class="<?= $user['id'] == $_SESSION['user_id'] ? 'table-success': '' ?>">
                           <th scope="row"><?= $user['id']?></th>
                           <td><?= $user['email']?></td>
+                          <td><?= $user['encryption']?></td>
                           <td><?= $user['password']?></td>
                         </tr>
+                      <?php endforeach; ?>
                       </tbody>
                     </table>
                   </div>
@@ -51,10 +56,18 @@ if (isset($_SESSION['user_id'])) {
                 <?php else: ?>
 
                   <div class="card-body">
-                    <h5 class="card-title">Seguridad web</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero, beatae?</p><br><br>
-                    <a href="login.php" class="btn btn-primary">Iniciar sesión</a>
-                    <a href="signup.php" class="btn btn-primary">Registrarse</a>
+                    <h5 class="card-title">Seguridad web - CIFRADO</h5>
+                    <p class="card-text">Presentado por:</p>
+                    <p class="font-weight-bold">Martha Meza</p>
+                    <p class="font-weight-bold">Jesus David Serna Soto</p>
+                    <p class="font-weight-bold">Deiver Ali Julio Contreras</p>
+                    <p class="card-text">
+                      Ejemplo de los diferentes tipos de cifrados utilizados para la seguridad web,
+                      entre los cuales tenemos HASH, SHA-1, MD5, SALT, y uno MIXTO;
+                      siendo HASH el más utilizado en la actualidad.
+                    </p>
+                    <a href="login.php" class="btn btn-success">Iniciar sesión</a>
+                    <a href="signup.php" class="btn btn-info">Registrarse</a>
                   </div>
 
                 <?php endif; ?>
@@ -63,7 +76,7 @@ if (isset($_SESSION['user_id'])) {
                     <?php if(!empty($user)): ?>
                       <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
                     <?php else: ?>
-                      CUN 2018
+                      Ingeniería de Sistemas
                     <?php endif; ?>
                   </div>
                 </div>

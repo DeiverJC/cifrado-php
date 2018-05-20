@@ -1,6 +1,7 @@
-    <nav class="navbar fixed-bottom navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Seguridad web</a>
-    </nav>
+    <br>
+    <footer class="footer bg-dark">
+      <p>CUN 2018</p>
+    </footer>
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
